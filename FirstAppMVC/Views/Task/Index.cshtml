@@ -1,0 +1,56 @@
+﻿@model IEnumerable<FirstAppMVC.Models.Task>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Tasks</h2>
+<div class="col-lg-3">
+    <button type="button" id="newButton" class="btn-primary btn-lg btn-block">New Task</button>
+
+</div>
+<div id="newTask"></div>
+
+<div id="editTask"></div>
+<br />
+<table class="col-lg-12 table">
+    <tr>
+        <th class="col-lg-9">Name</th>
+        <th class="col-lg-3">Actions</th>
+    </tr>
+    @foreach (var task in Model)
+    {
+        <tr>
+            <td class="col-lg-9">
+                @Html.DisplayFor(modelItem => task.Name)
+            </td>
+            <td class="col-lg-3">
+                <button type="button" id="editButton" onclick="EditTask(@task.ID)" class="btn btn-primary btn-block glyphicon-pencil"> Edit</button> <br />
+
+                @using (Html.BeginForm("CompleteTask", "Task"))
+                {
+                    @Html.HiddenFor(model => task.ID)
+                    @Html.ActionLink("Complete Task", "CompleteTask", "Task", null, new { @class = "saveButton btn btn-success btn-lg btn-block", onclick = "return false;" })
+                }
+            </td>
+        </tr>
+    }
+</table>
+@section Scripts {
+    <script type="text/javascript">
+        document.getElementById("newButton").onclick = function () { myFunction() };
+        function myFunction() {
+
+            $("#newTask").load('@Url.Action("New","Task")');
+            $("#newButton").hide();
+        };
+
+        var EditTask = function (taskId) {
+            var url = "/Task/Edit?id=" + taskId;
+            $("#editTask").load(url);
+        };
+
+        $('.saveButton').click(function () {
+            $(this).closest('form')[0].submit();
+        });
+    </script>
+}
